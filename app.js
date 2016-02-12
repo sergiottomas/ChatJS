@@ -1,4 +1,4 @@
-var express = require('express');
+/*var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -7,9 +7,10 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var chat = require('./public/javascripts/server');
 
-var app = express();
-
+var app = express();*/
+/*
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -54,7 +55,36 @@ app.use(function(err, req, res, next) {
     message: err.message,
     error: {}
   });
+});*/
+var app = require('http').createServer(index);
+var io = require('socket.io').listen(app);
+var fs = require('fs');
+var url = require('url');
+
+app.listen(3000, function(){
+  console.log("Servidor rodando!");
 });
 
+function index(req, res){
+  var myPath = url.parse(req.url).pathname;
+  var myPath = myPath.split(".");
+
+  if(myPath.length > 1){
+    fs.readFile(__dirname + myPath[0] + "." + myPath[1], function(err, data){
+      res.end(data);
+    });
+  }else{
+    fs.readFile(__dirname + '/index.html', function(err, data){
+      res.end(data);
+    });
+  }
+}
+
+
+io.on('connection', function(socket){
+  socket.on('mensagem', function(mensagem){
+    socket.broadcast.emit('mensagem', mensagem);
+  });
+});
 
 module.exports = app;

@@ -6,3 +6,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+#message-board{width: 100%; min-height: 400px;}
+#msg-panel .panel-footer{position: fixed; bottom: 0px; left: 0; width: 100%;}
+
+.sender{color: green;}
+.received{color: red;}
